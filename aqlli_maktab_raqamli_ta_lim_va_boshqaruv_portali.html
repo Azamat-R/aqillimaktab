@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="uz" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqlli Maktab — Raqamli Ta'lim va Boshqaruv Portali</title>
+    <!-- Tailwind CSS CDN (Oflayn rejimda buzilmasligi uchun qo'shimcha fallback stillar ham kiritilgan) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+                    },
+                    colors: {
+                        smart: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Oflayn muhit va silliq animatsiyalar uchun maxsus CSS */
+        @keyframes fadeSlideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-panel {
+            animation: fadeSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        /* Maxsus skrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.55);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-smart-600 selection:text-white">
+
+    <!-- YUQORI NAVIGATSIYA PANELI -->
+    <header class="sticky top-0 z-40 w-full backdrop-blur-xl bg-white/85 dark:bg-slate-900/85 border-b border-slate-200/80 dark:border-slate-800/80">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brend / Logo -->
+            <a href="#dashboard" class="flex items-center gap-3 group shrink-0">
+                <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-smart-600 via-indigo-500 to-cyan-500 flex items-center justify-center text-white shadow-lg shadow-smart-600/20 group-hover:scale-105 transition-transform">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 14l9-5-9-5-9 5 9 5z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
+                    </svg>
+                </div>
+                <div>
+                    <span class="font-extrabold text-lg tracking-tight block leading-none">Aqlli<span class="text-smart-600 dark:text-smart-400">Maktab</span></span>
+                    <span class="text-[11px] font-medium text-slate-500 dark:text-slate-400">Ixtisoslashtirilgan IT & STEAM</span>
+                </div>
+            </a>
+
+            <!-- Asosiy Navigatsiya Havolalari -->
+            <nav class="hidden xl:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+                <a href="#dashboard" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">Boshqaruv</a>
+                <a href="#ejurnal" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">E-Jurnal</a>
+                <a href="#jadval" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">Dars Jadvali</a>
+                <a href="#steam" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">STEAM Lab</a>
+                <a href="#kutubxona" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">E-Kutubxona</a>
+                <a href="#yangiliklar" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">Yangiliklar</a>
+                <a href="#jamoa" class="hover:text-smart-600 dark:hover:text-smart-400 transition-colors">Jamoa</a>
+            </nav>
+
+            <!-- O'ng tarafdagi boshqaruv tugmalari -->
+            <div class="flex items-center gap-2.5">
+                <!-- Admin Panel tugmasi -->
+                <button id="openAdminBtn" class="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-smart-600 dark:hover:bg-smart-700 text-white text-xs font-semibold flex items-center gap-1.5 shadow-sm transition-all">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                    </svg>
+                    <span>Admin</span>
+                </button>
+
+                <!-- Tungi/Kunduzgi rejim -->
+                <button id="themeToggle" aria-label="Mavzuni o'zgartirish" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
+                    <svg id="sunIcon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <svg id="moonIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- ASOSIY KONTENT KONTEYNERI -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-20">
+
+        <!-- ==============================================================
+             1. HERO & LIVE DASHBOARD ("AQLLI BOSHQARUV PANELI")
+        =============================================================== -->
+        <section id="dashboard" class="scroll-mt-24 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                
+                <!-- Asosiy Hero Karta (7 ustun) -->
+                <div class="lg:col-span-7 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-7 sm:p-9 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                    <div class="absolute -right-24 -top-24 w-72 h-72 bg-smart-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                    <div class="space-y-4 relative z-10">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/70 dark:border-emerald-800/60 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                            <span>Barcha aqlli tizimlar faol ishlamoqda</span>
+                        </div>
+                        <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-[1.15]">
+                            Kelajak ta'limi: <span class="text-transparent bg-clip-text bg-gradient-to-r from-smart-600 to-cyan-500">Aqlli Maktab</span> ekotizimi
+                        </h1>
+                        <p class="text-slate-600 dark:text-slate-400 text-sm sm:text-base max-w-xl leading-relaxed">
+                            O'quvchilarning davomati, elektron baholar, STEAM laboratoriya loyihalari va raqamli kutubxonani yagona intellektual platformada kuzatib boring.
+                        </p>
+                    </div>
+
+                    <div class="pt-7 flex flex-wrap items-center gap-3 relative z-10">
+                        <a href="#ejurnal" class="px-5 py-3 rounded-2xl bg-smart-600 hover:bg-smart-700 text-white font-semibold text-sm shadow-lg shadow-smart-600/20 transition-all hover:-translate-y-0.5">
+                            E-Jurnalni ochish
+                        </a>
+                        <a href="#jadval" class="px-5 py-3 rounded-2xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-colors">
+                            Dars jadvali
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Jonli Soat va Smart Tizimlar Statusi (5 ustun) -->
+                <div class="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-5">
+                    <!-- Jonli Soat va Sana kartasi -->
+                    <div class="rounded-3xl bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950 text-white p-6 sm:p-7 border border-slate-800 flex flex-col justify-between shadow-sm">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono uppercase tracking-wider text-indigo-300">Jonli Vaqt & Smena</span>
+                            <span id="shiftBadge" class="px-2.5 py-1 rounded-lg bg-white/10 text-cyan-300 text-xs font-medium">1-smena faol</span>
+                        </div>
+                        <div class="my-3">
+                            <div id="liveClock" class="text-3xl sm:text-4xl font-mono font-extrabold tracking-tight text-white">00:00:00</div>
+                            <div id="liveDate" class="text-xs sm:text-sm text-slate-400 mt-1">Yuklanmoqda...</div>
+                        </div>
+                        <div class="text-xs text-slate-400 flex items-center justify-between pt-3 border-t border-white/10">
+                            <span>Toshkent vaqti (UTC+5)</span>
+                            <span class="text-emerald-400 font-medium">● Server Onlayn</span>
+                        </div>
+                    </div>
+
+                    <!-- Smart Maktab Indikatorlari -->
+                    <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm">
+                        <div class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3">Infratuzilma Holati</div>
+                        <div class="space-y-2.5">
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                                    <span class="text-xs sm:text-sm font-medium">FaceID Kirish-Chiqish</span>
+                                </div>
+                                <span class="text-xs font-mono text-emerald-600 dark:text-emerald-400 font-semibold">99.8% Faol</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
+                                    <span class="text-xs sm:text-sm font-medium">Maktab Wi-Fi 6 Tarmog'i</span>
+                                </div>
+                                <span class="text-xs font-mono text-cyan-600 dark:text-cyan-400 font-semibold">1.2 Gbps</span>
+                            </div>
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                                    <span class="text-xs sm:text-sm font-medium">Interaktiv Smart Doskalar</span>
+                                </div>
+                                <span class="text-xs font-mono text-indigo-600 dark:text-indigo-400 font-semibold">32 / 32 Ulangan</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 ta Asosiy Statistika Bento Kartalari (Admin paneldan o'zgartirish mumkin) -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-3">
+                        <span class="text-xs font-semibold uppercase">O'quvchilar soni</span>
+                        <span class="p-2 rounded-xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </span>
+                    </div>
+                    <div id="statStudents" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">840</div>
+                    <div class="text-xs text-emerald-600 dark:text-emerald-400 mt-1 font-medium">Bugungi davomat: 98.4%</div>
+                </div>
+
+                <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-3">
+                        <span class="text-xs font-semibold uppercase">O'qituvchilar</span>
+                        <span class="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>
+                        </span>
+                    </div>
+                    <div id="statTeachers" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">68</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">85% oliy va 1-toifali</div>
+                </div>
+
+                <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-3">
+                        <span class="text-xs font-semibold uppercase">Olimpiada g'oliblari</span>
+                        <span class="p-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+                        </span>
+                    </div>
+                    <div id="statWinners" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">47</div>
+                    <div class="text-xs text-amber-600 dark:text-amber-400 mt-1 font-medium">Respublika va Xalqaro</div>
+                </div>
+
+                <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+                    <div class="flex items-center justify-between text-slate-400 mb-3">
+                        <span class="text-xs font-semibold uppercase">Aqlli sinfxonalar</span>
+                        <span class="p-2 rounded-xl bg-purple-50 dark:bg-purple-950/50 text-purple-600 dark:text-purple-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        </span>
+                    </div>
+                    <div id="statRooms" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">32</div>
+                    <div class="text-xs text-slate-500 dark:text-slate-400 mt-1">4 ta STEAM laboratoriya</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             2. ELEKTRON KUNDALIK VA BAHOLAR ("E-JURNAL")
+        =============================================================== -->
+        <section id="ejurnal" class="scroll-mt-24 space-y-6">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono font-semibold uppercase tracking-wider text-smart-600 dark:text-smart-400">Raqamli Monitoring</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">Elektron Kundalik va Baholar (E-Jurnal)</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">O'quvchi profilini tanlab, choraklik baholar, o'rtacha ball va FaceID davomatini ko'ring.</p>
+                </div>
+                <!-- O'quvchi tanlash -->
+                <div class="flex items-center gap-3">
+                    <label for="studentSelector" class="text-xs font-semibold text-slate-500 dark:text-slate-400">O'quvchi:</label>
+                    <select id="studentSelector" class="px-4 py-2.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-smart-500">
+                        <!-- JS orqali to'ldiriladi -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- E-Jurnal Bento Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                <!-- O'quvchi Profili Kartasi (4 ustun) -->
+                <div id="studentProfileCard" class="lg:col-span-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 flex flex-col justify-between shadow-sm">
+                    <!-- JS orqali render qilinadi -->
+                </div>
+
+                <!-- Fanlar va Baholar Jadvali (8 ustun) -->
+                <div class="lg:col-span-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-7 shadow-sm flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="font-bold text-lg">Asosiy Fanlar Bo'yicha O'zlashtirish</h3>
+                        <span class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-500">2026-2027 O'quv yili</span>
+                    </div>
+                    <div id="studentGradesList" class="space-y-4">
+                        <!-- JS orqali fanlar va progress barlar yuklanadi -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             3. DARS JADVALI ("AQLLI DARS JADVALI")
+        =============================================================== -->
+        <section id="jadval" class="scroll-mt-24 space-y-6">
+            <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-9 shadow-sm space-y-6">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-6 border-b border-slate-100 dark:border-slate-800">
+                    <div>
+                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-cyan-600 dark:text-cyan-400">Haftalik Reja</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">Aqlli Dars Jadvali</h2>
+                    </div>
+
+                    <!-- Sinf tanlash tugmalari (5-sinf dan 9-sinf gacha) -->
+                    <div id="classTabs" class="flex flex-wrap gap-2">
+                        <!-- JS orqali tugmalar yaratiladi -->
+                    </div>
+                </div>
+
+                <!-- Kun tanlash va Darslar ro'yxati -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                    <!-- Hafta kunlari (3 ustun) -->
+                    <div id="dayTabs" class="lg:col-span-3 flex lg:flex-col gap-2 overflow-x-auto pb-2 lg:pb-0">
+                        <!-- JS orqali kunlar yuklanadi -->
+                    </div>
+
+                    <!-- Tanlangan kun darslari (9 ustun) -->
+                    <div class="lg:col-span-9">
+                        <div id="scheduleLessonsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- JS orqali dars kartalari chiziladi -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             4. STEAM VA IT LABORATORIYA ("STEAM & ROBOTOTEXNIKA")
+        =============================================================== -->
+        <section id="steam" class="scroll-mt-24 space-y-6">
+            <div>
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-purple-600 dark:text-purple-400">Innovatsiya Markazi</span>
+                <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">STEAM va IT Laboratoriyalari</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Nazariy bilimlarni amaliyotga tatbiq etuvchi zamonaviy laboratoriya yo'nalishlari. Batafsil ma'lumot uchun kartani bosing.</p>
+            </div>
+
+            <div id="steamGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- JS orqali 4 ta STEAM yo'nalish kartalari chiziladi -->
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             5. ELEKTRON KUTUBXONA ("E-KUTUBXONA")
+        =============================================================== -->
+        <section id="kutubxona" class="scroll-mt-24 space-y-6">
+            <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 sm:p-9 shadow-sm space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Raqamli Resurslar</span>
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">Elektron Kutubxona (E-Kutubxona)</h2>
+                    </div>
+
+                    <!-- Qidiruv va Kategoriya filtri -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <input type="text" id="librarySearch" placeholder="Kitob yoki muallif izlash..." class="px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-smart-500 w-full sm:w-64">
+                        <select id="libraryCategoryFilter" class="px-4 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-smart-500">
+                            <option value="all">Barcha yo'nalishlar</option>
+                            <option value="Dasturlash">Dasturlash & IT</option>
+                            <option value="Aniq fanlar">Aniq fanlar</option>
+                            <option value="Xorijiy tillar">IELTS & Ingliz tili</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Kitoblar katalogi -->
+                <div id="libraryGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    <!-- JS orqali yuklanadi -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             6. MAKTAB YANGILIKLARI VA E'LONLAR ("YANGILIKLAR")
+        =============================================================== -->
+        <section id="yangiliklar" class="scroll-mt-24 space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <span class="text-xs font-mono font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">So'nggi Xabarlar</span>
+                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">Maktab Yangiliklari va E'lonlar</h2>
+                    <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Olimpiada g'alabalari, tadbirlar va muhim e'lonlar (Admin panel orqali yangi e'lon qo'shish mumkin).</p>
+                </div>
+            </div>
+
+            <div id="newsGrid" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- JS orqali yangiliklar yuklanadi -->
+            </div>
+        </section>
+
+        <!-- ==============================================================
+             7. O'QITUVCHILAR VA RAHBARIYAT ("JAMOA")
+        =============================================================== -->
+        <section id="jamoa" class="scroll-mt-24 space-y-6">
+            <div>
+                <span class="text-xs font-mono font-semibold uppercase tracking-wider text-smart-600 dark:text-smart-400">Pedagogik Tarkib</span>
+                <h2 class="text-2xl sm:text-3xl font-bold tracking-tight mt-1">O'qituvchilar va Rahbariyat</h2>
+                <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">Xalqaro sertifikatlarga ega tajribali ustozlar va maktab ma'muriyati.</p>
+            </div>
+
+            <div id="teamGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <!-- JS orqali ustozlar profillari chiziladi -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 py-10 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2.5">
+                <span class="font-bold text-slate-900 dark:text-white">Aqlli Maktab</span>
+                <span>— Raqamli Ta'lim va Boshqaruv Portali.</span>
+            </div>
+            <div class="text-xs font-mono">Toshkent sh., Innovatsiya ko'chasi 1-uy &bull; 2026</div>
+        </div>
+    </footer>
+
+    <!-- ==============================================================
+         UMUMIY MA'LUMOT MODALI (STEAM, Kutubxona va Yangiliklar uchun)
+    =============================================================== -->
+    <div id="universalModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-2xl max-h-[88vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-panel">
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/60 dark:bg-slate-900">
+                <span id="uModalBadge" class="px-3 py-1 rounded-xl bg-smart-100 dark:bg-smart-900/50 text-smart-700 dark:text-smart-300 text-xs font-bold uppercase tracking-wide">Kategoriya</span>
+                <button id="closeUniversalModal" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+            <div id="uModalBody" class="p-6 sm:p-8 overflow-y-auto space-y-5 text-slate-700 dark:text-slate-300 leading-relaxed">
+                <!-- Dinamik kontent -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         8. YOPIQ ADMIN BOSHQARUV PANELI MODALI (PIN: 1234)
+    =============================================================== -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-panel">
+            
+            <!-- Admin Modal Header -->
+            <div class="px-6 py-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="w-2.5 h-2.5 rounded-full bg-smart-600"></span>
+                    <h3 class="font-bold text-base">Admin Boshqaruv Markazi</h3>
+                </div>
+                <button id="closeAdminModal" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                </button>
+            </div>
+
+            <!-- 1-Bosqich: PIN Kod Kiritish Ekrani -->
+            <div id="adminAuthScreen" class="p-8 text-center space-y-5">
+                <div class="w-14 h-14 mx-auto rounded-2xl bg-smart-50 dark:bg-smart-950/60 text-smart-600 dark:text-smart-400 flex items-center justify-center">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                </div>
+                <div>
+                    <h4 class="text-xl font-bold">Tizimga kirish</h4>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Boshqaruv panelini ochish uchun 4 xonali PIN-kodni kiriting (Demo PIN: <strong class="font-mono text-smart-600 dark:text-smart-400">1234</strong>)</p>
+                </div>
+                <div class="max-w-xs mx-auto space-y-3">
+                    <input type="password" id="adminPinInput" maxlength="4" placeholder="••••" class="w-full text-center tracking-[0.6em] font-mono text-2xl py-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-smart-500">
+                    <p id="adminPinError" class="text-xs text-rose-500 hidden font-medium">Noto'g'ri PIN-kod! Qaytadan urinib ko'ring.</p>
+                    <button id="verifyPinBtn" class="w-full py-3 rounded-2xl bg-smart-600 hover:bg-smart-700 text-white font-semibold text-sm transition-colors">
+                        Tasdiqlash va Kirish
+                    </button>
+                </div>
+            </div>
+
+            <!-- 2-Bosqich: Boshqaruv Paneli (Yashirin) -->
+            <div id="adminDashboardScreen" class="hidden p-6 overflow-y-auto space-y-6">
+                <!-- Xabar banneri -->
+                <div id="adminToast" class="hidden p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs font-semibold text-center">
+                    O'zgarishlar muvaffaqiyatli saqlandi!
+                </div>
+
+                <!-- Maktab Statistikasini Yangilash -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500">1. Maktab Ko'rsatkichlarini Tahrirlash</h4>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs text-slate-500 block mb-1">O'quvchilar soni</label>
+                            <input type="number" id="inputStatStudents" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 block mb-1">O'qituvchilar soni</label>
+                            <input type="number" id="inputStatTeachers" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 block mb-1">Olimpiada g'oliblari</label>
+                            <input type="number" id="inputStatWinners" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold">
+                        </div>
+                        <div>
+                            <label class="text-xs text-slate-500 block mb-1">Aqlli sinfxonalar</label>
+                            <input type="number" id="inputStatRooms" class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold">
+                        </div>
+                    </div>
+                    <button id="saveStatsBtn" class="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-700 dark:hover:bg-slate-600 text-white text-xs font-semibold transition-colors">
+                        Statistikani Yangilash
+                    </button>
+                </div>
+
+                <hr class="border-slate-100 dark:border-slate-800">
+
+                <!-- Yangi E'lon / Yangilik Qo'shish -->
+                <div class="space-y-3">
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500">2. Yangi E'lon yoki Yangilik Qo'shish</h4>
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div class="sm:col-span-2">
+                                <input type="text" id="newNewsTitle" placeholder="Yangilik sarlavhasi..." class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
+                            </div>
+                            <div>
+                                <select id="newNewsCategory" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm">
+                                    <option value="E'lon">E'lon</option>
+                                    <option value="Olimpiada">Olimpiada</option>
+                                    <option value="Tadbir">Tadbir</option>
+                                </select>
+                            </div>
+                        </div>
+                        <textarea id="newNewsContent" rows="3" placeholder="Yangilikning batafsil matnini kiriting..." class="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm"></textarea>
+                        <button id="addNewsBtn" class="w-full py-2.5 rounded-xl bg-smart-600 hover:bg-smart-700 text-white text-xs font-semibold transition-colors">
+                            + Saytga Joylash
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Boshlang'ich holatga qaytarish tugmasi -->
+                <div class="pt-2 flex justify-between items-center text-xs text-slate-400">
+                    <span>Ma'lumotlar brauzer xotirasida saqlanadi</span>
+                    <button id="resetDemoDataBtn" class="text-rose-500 hover:underline font-medium">Boshlang'ich holatga qaytarish</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         JAVASCRIPT: BARCHA MA'LUMOTLAR VA INTERAKTIV FUNKSIYALAR
+    =============================================================== -->
+    <script>
+        // --------------------------------------------------------------
+        // 1. BOSHLANG'ICH MA'LUMOTLAR BAZASI (DEFAULT DATA)
+        // --------------------------------------------------------------
+        const defaultStats = {
+            students: 840,
+            teachers: 68,
+            winners: 47,
+            rooms: 32
+        };
+
+        const studentsData = [
+            {
+                id: "ST-2026-01",
+                name: "Karimov Amirbek",
+                gradeClass: "9-A sinf (IT yo'nalishi)",
+                avatarInitials: "KA",
+                accent: "from-blue-600 to-indigo-600",
+                attendance: "99.2%",
+                faceIdEntry: "07:52 (Bugun kelgan)",
+                gpa: "4.92",
+                subjects: [
+                    { name: "Informatika va Dasturlash (Python)", score: 98, grade: 5, teacher: "B. Alimov" },
+                    { name: "Matematika (Algebra va Geometriya)", score: 95, grade: 5, teacher: "M. Qodirova" },
+                    { name: "Fizika va Mexanika", score: 91, grade: 5, teacher: "S. Tursunov" },
+                    { name: "Ingliz tili (IELTS tayyorgarlik)", score: 94, grade: 5, teacher: "D. Yusupova" }
+                ]
+            },
+            {
+                id: "ST-2026-02",
+                name: "Rustamova Madinabonu",
+                gradeClass: "8-B sinf (STEAM yo'nalishi)",
+                avatarInitials: "RM",
+                accent: "from-emerald-500 to-teal-600",
+                attendance: "100%",
+                faceIdEntry: "07:48 (Bugun kelgan)",
+                gpa: "4.85",
+                subjects: [
+                    { name: "Informatika va Web-dasturlash", score: 96, grade: 5, teacher: "B. Alimov" },
+                    { name: "Matematika (Mantiq va Tahlil)", score: 92, grade: 5, teacher: "M. Qodirova" },
+                    { name: "Fizika va Robototexnika", score: 94, grade: 5, teacher: "J. Rahimov" },
+                    { name: "Ingliz tili", score: 89, grade: 5, teacher: "D. Yusupova" }
+                ]
+            },
+            {
+                id: "ST-2026-03",
+                name: "Toshpo'latov Sardor",
+                gradeClass: "7-A sinf (Aniq fanlar)",
+                avatarInitials: "TS",
+                accent: "from-amber-500 to-orange-600",
+                attendance: "96.5%",
+                faceIdEntry: "07:58 (Bugun kelgan)",
+                gpa: "4.60",
+                subjects: [
+                    { name: "Informatika (Scratch & Algoritmlar)", score: 90, grade: 5, teacher: "N. Sobirova" },
+                    { name: "Matematika", score: 88, grade: 5, teacher: "M. Qodirova" },
+                    { name: "Fizika asoslari", score: 82, grade: 4, teacher: "S. Tursunov" },
+                    { name: "Ingliz tili", score: 86, grade: 5, teacher: "D. Yusupova" }
+                ]
+            }
+        ];
+
+        const scheduleData = {
+            "5-sinf": {
+                "Dushanba": [
+                    { time: "08:30 - 09:15", subject: "Matematika", room: "204-xona (Smart)", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Informatika (Scratch)", room: "101-IT Lab", teacher: "N. Sobirova" },
+                    { time: "10:25 - 11:10", subject: "Ingliz tili", room: "305-xona", teacher: "D. Yusupova" },
+                    { time: "11:20 - 12:05", subject: "Tabiiy fanlar (Science)", room: "208-Lab", teacher: "O. Karimova" }
+                ],
+                "Seshanba": [
+                    { time: "08:30 - 09:15", subject: "Ona tili va adabiyot", room: "201-xona", teacher: "G. Valiyeva" },
+                    { time: "09:25 - 10:10", subject: "Matematika", room: "204-xona (Smart)", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Robototexnika (LEGO)", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "11:20 - 12:05", subject: "Jismoniy tarbiya", room: "Sport zali", teacher: "A. Saidov" }
+                ],
+                "Chorshanba": [
+                    { time: "08:30 - 09:15", subject: "Ingliz tili", room: "305-xona", teacher: "D. Yusupova" },
+                    { time: "09:25 - 10:10", subject: "Tarix", room: "210-xona", teacher: "R. Xolmatov" },
+                    { time: "10:25 - 11:10", subject: "Matematika", room: "204-xona", teacher: "M. Qodirova" },
+                    { time: "11:20 - 12:05", subject: "3D Modellashtirish", room: "102-IT Lab", teacher: "N. Sobirova" }
+                ],
+                "Payshanba": [
+                    { time: "08:30 - 09:15", subject: "Informatika", room: "101-IT Lab", teacher: "N. Sobirova" },
+                    { time: "09:25 - 10:10", subject: "Ingliz tili", room: "305-xona", teacher: "D. Yusupova" },
+                    { time: "10:25 - 11:10", subject: "Ona tili", room: "201-xona", teacher: "G. Valiyeva" },
+                    { time: "11:20 - 12:05", subject: "Mantiqiy fikrlash", room: "204-xona", teacher: "M. Qodirova" }
+                ],
+                "Juma": [
+                    { time: "08:30 - 09:15", subject: "Matematika", room: "204-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Science Amaliyot", room: "208-Lab", teacher: "O. Karimova" },
+                    { time: "10:25 - 11:10", subject: "Ingliz tili (Speaking)", room: "305-xona", teacher: "D. Yusupova" },
+                    { time: "11:20 - 12:05", subject: "Tarbiyaviy soat", room: "204-xona", teacher: "M. Qodirova" }
+                ]
+            },
+            "6-sinf": {
+                "Dushanba": [
+                    { time: "08:30 - 09:15", subject: "Informatika (Python kirish)", room: "102-IT Lab", teacher: "N. Sobirova" },
+                    { time: "09:25 - 10:10", subject: "Matematika", room: "205-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Biologiya", room: "301-BioLab", teacher: "O. Karimova" },
+                    { time: "11:20 - 12:05", subject: "Ingliz tili", room: "306-xona", teacher: "D. Yusupova" }
+                ],
+                "Seshanba": [
+                    { time: "08:30 - 09:15", subject: "Matematika", room: "205-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Geografiya", room: "212-xona", teacher: "R. Xolmatov" },
+                    { time: "10:25 - 11:10", subject: "Arduino asoslari", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "11:20 - 12:05", subject: "Ona tili", room: "201-xona", teacher: "G. Valiyeva" }
+                ],
+                "Chorshanba": [
+                    { time: "08:30 - 09:15", subject: "Ingliz tili", room: "306-xona", teacher: "D. Yusupova" },
+                    { time: "09:25 - 10:10", subject: "Informatika", room: "102-IT Lab", teacher: "N. Sobirova" },
+                    { time: "10:25 - 11:10", subject: "Matematika", room: "205-xona", teacher: "M. Qodirova" },
+                    { time: "11:20 - 12:05", subject: "Jismoniy tarbiya", room: "Sport zali", teacher: "A. Saidov" }
+                ],
+                "Payshanba": [
+                    { time: "08:30 - 09:15", subject: "Tarix", room: "210-xona", teacher: "R. Xolmatov" },
+                    { time: "09:25 - 10:10", subject: "Matematika", room: "205-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Ingliz tili", room: "306-xona", teacher: "D. Yusupova" },
+                    { time: "11:20 - 12:05", subject: "Raqamli savodxonlik", room: "102-IT Lab", teacher: "N. Sobirova" }
+                ],
+                "Juma": [
+                    { time: "08:30 - 09:15", subject: "Fizika propedevtikasi", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "09:25 - 10:10", subject: "Ona tili va adabiyot", room: "201-xona", teacher: "G. Valiyeva" },
+                    { time: "10:25 - 11:10", subject: "STEAM Loyiha ishi", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "11:20 - 12:05", subject: "Matematika", room: "205-xona", teacher: "M. Qodirova" }
+                ]
+            },
+            "7-sinf": {
+                "Dushanba": [
+                    { time: "08:30 - 09:15", subject: "Algebra", room: "301-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Fizika", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "10:25 - 11:10", subject: "Informatika (Web HTML/CSS)", room: "103-IT Lab", teacher: "B. Alimov" },
+                    { time: "11:20 - 12:05", subject: "Ingliz tili", room: "307-xona", teacher: "D. Yusupova" }
+                ],
+                "Seshanba": [
+                    { time: "08:30 - 09:15", subject: "Geometriya", room: "301-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Kimyo", room: "302-KimyoLab", teacher: "O. Karimova" },
+                    { time: "10:25 - 11:10", subject: "Ingliz tili", room: "307-xona", teacher: "D. Yusupova" },
+                    { time: "11:20 - 12:05", subject: "Ona tili", room: "202-xona", teacher: "G. Valiyeva" }
+                ],
+                "Chorshanba": [
+                    { time: "08:30 - 09:15", subject: "Fizika", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "09:25 - 10:10", subject: "Algebra", room: "301-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Robototexnika & Sensorlar", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "11:20 - 12:05", subject: "Tarix", room: "210-xona", teacher: "R. Xolmatov" }
+                ],
+                "Payshanba": [
+                    { time: "08:30 - 09:15", subject: "Informatika (Python)", room: "103-IT Lab", teacher: "B. Alimov" },
+                    { time: "09:25 - 10:10", subject: "Ingliz tili", room: "307-xona", teacher: "D. Yusupova" },
+                    { time: "10:25 - 11:10", subject: "Biologiya", room: "301-BioLab", teacher: "O. Karimova" },
+                    { time: "11:20 - 12:05", subject: "Jismoniy tarbiya", room: "Sport zali", teacher: "A. Saidov" }
+                ],
+                "Juma": [
+                    { time: "08:30 - 09:15", subject: "Algebra", room: "301-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Geometriya", room: "301-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Ona tili va adabiyot", room: "202-xona", teacher: "G. Valiyeva" },
+                    { time: "11:20 - 12:05", subject: "IT Klub (Hackathon)", room: "103-IT Lab", teacher: "B. Alimov" }
+                ]
+            },
+            "8-sinf": {
+                "Dushanba": [
+                    { time: "08:30 - 09:15", subject: "Informatika (JavaScript)", room: "103-IT Lab", teacher: "B. Alimov" },
+                    { time: "09:25 - 10:10", subject: "Algebra", room: "304-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Fizika (Elektr)", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "11:20 - 12:05", subject: "Ingliz tili (Pre-IELTS)", room: "308-xona", teacher: "D. Yusupova" }
+                ],
+                "Seshanba": [
+                    { time: "08:30 - 09:15", subject: "Kimyo", room: "302-KimyoLab", teacher: "O. Karimova" },
+                    { time: "09:25 - 10:10", subject: "Geometriya", room: "304-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Sun'iy intellekt asoslari", room: "105-AI Lab", teacher: "B. Alimov" },
+                    { time: "11:20 - 12:05", subject: "Tarix", room: "210-xona", teacher: "R. Xolmatov" }
+                ],
+                "Chorshanba": [
+                    { time: "08:30 - 09:15", subject: "Ingliz tili (Pre-IELTS)", room: "308-xona", teacher: "D. Yusupova" },
+                    { time: "09:25 - 10:10", subject: "Fizika", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "10:25 - 11:10", subject: "Algebra", room: "304-xona", teacher: "M. Qodirova" },
+                    { time: "11:20 - 12:05", subject: "Ona tili", room: "202-xona", teacher: "G. Valiyeva" }
+                ],
+                "Payshanba": [
+                    { time: "08:30 - 09:15", subject: "Robototexnika (IoT)", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "09:25 - 10:10", subject: "Informatika", room: "103-IT Lab", teacher: "B. Alimov" },
+                    { time: "10:25 - 11:10", subject: "Biologiya", room: "301-BioLab", teacher: "O. Karimova" },
+                    { time: "11:20 - 12:05", subject: "Jismoniy tarbiya", room: "Sport zali", teacher: "A. Saidov" }
+                ],
+                "Juma": [
+                    { time: "08:30 - 09:15", subject: "Algebra (Olimpiada)", room: "304-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Ingliz tili", room: "308-xona", teacher: "D. Yusupova" },
+                    { time: "10:25 - 11:10", subject: "Fizika amaliyot", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "11:20 - 12:05", subject: "Startap loyihalar", room: "105-AI Lab", teacher: "B. Alimov" }
+                ]
+            },
+            "9-sinf": {
+                "Dushanba": [
+                    { time: "08:30 - 09:15", subject: "Python & Ma'lumotlar tahlili", room: "105-AI Lab", teacher: "B. Alimov" },
+                    { time: "09:25 - 10:10", subject: "Algebra va analiz asoslari", room: "309-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "IELTS Intensive", room: "308-xona", teacher: "D. Yusupova" },
+                    { time: "11:20 - 12:05", subject: "Fizika (Mexanika & Optika)", room: "209-FizLab", teacher: "S. Tursunov" }
+                ],
+                "Seshanba": [
+                    { time: "08:30 - 09:15", subject: "Geometriya", room: "309-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "Kiberxavfsizlik asoslari", room: "103-IT Lab", teacher: "B. Alimov" },
+                    { time: "10:25 - 11:10", subject: "Kimyo", room: "302-KimyoLab", teacher: "O. Karimova" },
+                    { time: "11:20 - 12:05", subject: "O'zbekiston tarixi", room: "210-xona", teacher: "R. Xolmatov" }
+                ],
+                "Chorshanba": [
+                    { time: "08:30 - 09:15", subject: "IELTS Intensive", room: "308-xona", teacher: "D. Yusupova" },
+                    { time: "09:25 - 10:10", subject: "Algebra", room: "309-xona", teacher: "M. Qodirova" },
+                    { time: "10:25 - 11:10", subject: "Fizika", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "11:20 - 12:05", subject: "Ona tili va adabiyot", room: "202-xona", teacher: "G. Valiyeva" }
+                ],
+                "Payshanba": [
+                    { time: "08:30 - 09:15", subject: "Full-Stack Web Loyiha", room: "105-AI Lab", teacher: "B. Alimov" },
+                    { time: "09:25 - 10:10", subject: "Avtonom Robototexnika", room: "104-STEAM", teacher: "J. Rahimov" },
+                    { time: "10:25 - 11:10", subject: "Huquq asoslari", room: "210-xona", teacher: "R. Xolmatov" },
+                    { time: "11:20 - 12:05", subject: "Jismoniy tarbiya", room: "Sport zali", teacher: "A. Saidov" }
+                ],
+                "Juma": [
+                    { time: "08:30 - 09:15", subject: "Matematika (SAT tayyorlov)", room: "309-xona", teacher: "M. Qodirova" },
+                    { time: "09:25 - 10:10", subject: "IELTS Mock Exam", room: "308-xona", teacher: "D. Yusupova" },
+                    { time: "10:25 - 11:10", subject: "Fizika", room: "209-FizLab", teacher: "S. Tursunov" },
+                    { time: "11:20 - 12:05", subject: "Kasbga yo'naltirish", room: "309-xona", teacher: "B. Alimov" }
+                ]
+            }
+        };
+
+        const steamLabsData = [
+            {
+                id: "robotics",
+                title: "Robototexnika va IoT",
+                badge: "104-STEAM Lab",
+                shortDesc: "Arduino, Raspberry Pi va LEGO Spike Prime asosida aqlli qurilmalar va avtonom robotlar yasash.",
+                accent: "from-amber-500 to-orange-600",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"/></svg>`,
+                details: "Robototexnika laboratoriyamizda 5-9-sinf o'quvchilari mexanika, elektronika va sensorlar bilan ishlashni o'rganadilar. O'quvchilarimiz 'Aqlli issiqxona', 'Avtomatik yong'in o'chiruvchi robot' va 'Chiziq bo'ylab harakatlanuvchi kuryer-robot' loyihalari bilan respublika musobaqalarida g'olib bo'lishgan.",
+                equipment: ["Arduino Uno & ESP32 mikrokontrollerlar", "3D Printerlar (Prusa & Creality)", "LEGO Education Spike Prime to'plamlari", "Ultrasonik va infraqizil datchiklar"]
+            },
+            {
+                id: "ai",
+                title: "Sun'iy Intellekt (AI)",
+                badge: "105-AI Lab",
+                shortDesc: "Neyron tarmoqlar, Computer Vision (tasvirni tanish) va mashinaviy o'qitish modellarini yaratish.",
+                accent: "from-purple-600 to-fuchsia-600",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>`,
+                details: "8-9-sinf o'quvchilari Python kutubxonalari (OpenCV, TensorFlow, Scikit-Learn) yordamida sun'iy intellekt algoritmlarini amalda sinab ko'radilar. Hozirda o'quvchilar maktab oshxonasida navbatni tahlil qiluvchi kamera tizimi ustida ishlashmoqda.",
+                equipment: ["NVIDIA RTX grafik stansiyalari", "HD Computer Vision kameralari", "Python AI dasturlash muhiti", "Ochiq ma'lumotlar (Datasets) bazasi"]
+            },
+            {
+                id: "coding",
+                title: "Dasturlash (Python & Web)",
+                badge: "103-IT Lab",
+                shortDesc: "Scratch blokli kodlashdan tortib Python backend va zamonaviy Web-ilovalar yaratishgacha.",
+                accent: "from-blue-600 to-indigo-600",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+                details: "Dasturlash darslari bosqichma-bosqich tizimlashtirilgan: 5-sinfda mantiqiy algoritmlar va Scratch, 6-7-sinflarda Python asoslari va HTML/CSS, 8-9-sinflarda esa JavaScript, ma'lumotlar bazasi va sport dasturlash (olimpiada masalalari) o'rgatiladi.",
+                equipment: ["24 ta zamonaviy Core i7 kompyuterlar", "GitHub Student Developer Pack", "Ichki olimpiada hakamlik tizimi", "Interaktiv kod tahlil doskasi"]
+            },
+            {
+                id: "science",
+                title: "Aniq Fanlar & Fizika Lab",
+                badge: "209-FizLab",
+                shortDesc: "Raqamli datchiklar yordamida fizika, kimyo va matematika tajribalarini modellashtirish.",
+                accent: "from-emerald-500 to-teal-600",
+                icon: `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>`,
+                details: "Aniq fanlar laboratoriyasi fizika va kimyo qonunlarini quruq formula emas, balki jonli tajriba sifatida ko'rsatadi. Raqamli ossillograflar va elektron mikroskoplar kompyuterga to'g'ridan-to'g'ri ulanadi.",
+                equipment: ["Raqamli Vernier sensorlari", "Elektron optik mikroskoplar", "Matematik modellashtirish (GeoGebra)", "Xavfsiz kimyoviy reaktivlar stendi"]
+            }
+        ];
+
+        const libraryBooksData = [
+            {
+                id: 1,
+                title: "Python Dasturlash Asoslari",
+                author: "B. Alimov, A. Karimov",
+                category: "Dasturlash",
+                pages: 240,
+                grade: "6-9-sinflar",
+                summary: "O'zgaruvchilar, shart operatorlari, sikllar, funksiyalar va obyektga yo'naltirilgan dasturlash (OOP) asoslarini o'zbek tilida sodda misollar bilan o'rgatuvchi qo'llanma.",
+                chapters: ["1-bob: Python muhitini o'rnatish", "2-bob: Ma'lumot turlari va ro'yxatlar", "3-bob: Funksiyalar va modullar", "4-bob: Amaliy mini-loyihalar"]
+            },
+            {
+                id: 2,
+                title: "Olimpiada Matematikasi: Mantiq va Kombintorika",
+                author: "M. Qodirova",
+                category: "Aniq fanlar",
+                pages: 310,
+                grade: "7-9-sinflar",
+                summary: "Respublika va xalqaro matematika olimpiadalariga tayyorgarlik ko'ruvchi o'quvchilar uchun nostandart masalalar to'plami va yechim usullari.",
+                chapters: ["1-bob: Dirixle prinsipi", "2-bob: Sonlar nazariyasi asoslari", "3-bob: Graflar nazariyasiga kirish", "4-bob: Xalqaro olimpiada masalalari"]
+            },
+            {
+                id: 3,
+                title: "IELTS Academic: 7.5+ Strategiyasi",
+                author: "D. Yusupova",
+                category: "Xorijiy tillar",
+                pages: 195,
+                grade: "8-9-sinflar",
+                summary: "Listening, Reading, Writing va Speaking bo'limlari bo'yicha akademik lug'at boyligi, esse tuzish qoidalari va imtihon texnikalari.",
+                chapters: ["1-bob: Academic Reading texnikalari", "2-bob: Writing Task 1 (Grafiklar tahlili)", "3-bob: Writing Task 2 (Argumentativ esse)", "4-bob: Speaking Part 2 & 3 namunalari"]
+            },
+            {
+                id: 4,
+                title: "Web Dasturlash: HTML5, CSS3 va JavaScript",
+                author: "B. Alimov",
+                category: "Dasturlash",
+                pages: 280,
+                grade: "7-9-sinflar",
+                summary: "Zamonaviy moslashuvchan (responsive) veb-saytlar yaratish, DOM bilan ishlash va interaktiv veb-ilovalarni noldan tuzish bo'yicha amaliy darslik.",
+                chapters: ["1-bob: Semantik HTML5 tuzilmasi", "2-bob: Flexbox va CSS Grid", "3-bob: JavaScript ES6+ asoslari", "4-bob: Yakuniy veb-portal loyihasi"]
+            },
+            {
+                id: 5,
+                title: "Fizikadan Eksperimental Masalalar",
+                author: "S. Tursunov",
+                category: "Aniq fanlar",
+                pages: 215,
+                grade: "7-9-sinflar",
+                summary: "Mexanika, elektr va optika bo'limlari bo'yicha laboratoriya ishlarini bajarish va fizik jarayonlarni hisoblash qo'llanmasi.",
+                chapters: ["1-bob: Kinematika va dinamika", "2-bob: O'zgarmas tok qonunlari", "3-bob: Yorug'likning sinishi va linzalar", "4-bob: Laboratoriya ishlari to'plami"]
+            },
+            {
+                id: 6,
+                title: "English for IT & Future Tech",
+                author: "D. Yusupova, N. Sobirova",
+                category: "Xorijiy tillar",
+                pages: 160,
+                grade: "5-8-sinflar",
+                summary: "Dasturlash, sun'iy intellekt va texnologiya sohasidagi eng muhim inglizcha atamalar hamda texnik hujjatlarni o'qish ko'nikmalari.",
+                chapters: ["Unit 1: Computer Hardware & Software", "Unit 2: The Internet & Cybersecurity", "Unit 3: Artificial Intelligence", "Unit 4: Presenting a Tech Startup"]
+            }
+        ];
+
+        const defaultNewsData = [
+            {
+                id: 101,
+                category: "Olimpiada",
+                date: "18 Noyabr, 2026",
+                title: "O'quvchilarimiz Respublika Informatika olimpiadasida 3 ta oltin medalni qo'lga kiritdi!",
+                excerpt: "9-A sinf o'quvchisi Karimov Amirbek boshchiligidagi jamoamiz algoritmik dasturlash yo'nalishida mutlaq g'oliblikni egalladi.",
+                fullText: "Toshkent shahrida bo'lib o'tgan Respublika fan olimpiadasining final bosqichida Aqlli Maktab jamoasi yuksak natija qayd etdi. O'quvchilarimiz C++ va Python tillarida 5 soat davomida 6 ta murakkab algoritmik masalani muvaffaqiyatli yechib, 3 ta oltin va 2 ta kumush medalga sazovor bo'lishdi. G'oliblar xalqaro olimpiada saralash bosqichiga yo'llanma oldilar."
+            },
+            {
+                id: 102,
+                category: "Tadbir",
+                date: "14 Noyabr, 2026",
+                title: "Maktabimizda 'STEAM & Robotics Expo 2026' ko'rgazmasi bo'lib o'tdi",
+                excerpt: "Ko'rgazmada 5-9-sinf o'quvchilari tomonidan yasalgan 25 dan ortiq aqlli qurilmalar va avtonom robotlar namoyish etildi.",
+                fullText: "Ota-onalar va IT mutaxassislar ishtirok etgan ko'rgazmada o'quvchilar o'z qo'llari bilan yasagan 'Quyosh energiyasida ishlovchi aqlli sug'orish tizimi', 'Ko'zi ojizlar uchun ovozli yo'l ko'rsatkich' hamda '3D bosma protez qo'l' loyihalarini taqdim etdilar. Eng yaxshi 3 ta loyiha maktab innovatsiya fondi tomonidan moliyalashtiriladigan bo'ldi."
+            },
+            {
+                id: 103,
+                category: "E'lon",
+                date: "20 Noyabr, 2026",
+                title: "Qishki IT-Bootcamp va IELTS intensiv kurslariga ro'yxatdan o'tish boshlandi",
+                excerpt: "Barcha 6-9-sinf o'quvchilari uchun qo'shimcha amaliy dasturlash va ingliz tili to'garaklari jadvali e'lon qilindi.",
+                fullText: "Kelasi haftadan boshlab darsdan tashqari vaqtlarda (soat 14:00 dan 16:30 gacha) Python Web-dasturlash, Arduino Robototexnika hamda IELTS Speaking klublari o'z faoliyatini boshlaydi. Ishtirok etish istagidagi o'quvchilar o'z sinf rahbarlariga yoki 103-IT laboratoriyasiga murojaat qilishlari mumkin."
+            }
+        ];
+
+        const teamData = [
+            {
+                name: "Abdullayev Ravshan",
+                role: "Maktab Direktori",
+                subject: "Ta'lim menejmenti, PhD",
+                badge: "Rahbariyat",
+                initials: "AR",
+                accent: "from-slate-800 to-slate-900",
+                bio: "15 yillik pedagogik tajriba. Raqamli ta'lim texnologiyalarini joriy etish bo'yicha xalqaro ekspert."
+            },
+            {
+                name: "Alimov Bekzod",
+                role: "IT va AI Kafedrasi Mudiri",
+                subject: "Informatika, Python & AI",
+                badge: "Senior Mentor",
+                initials: "AB",
+                accent: "from-blue-600 to-indigo-600",
+                bio: "Xalqaro ICPC dasturlash musobaqalari ishtirokchisi. 20 dan ortiq olimpiada g'oliblarini tayyorlagan."
+            },
+            {
+                name: "Qodirova Malika",
+                role: "Oliy toifali o'qituvchi",
+                subject: "Olimpiada Matematikasi",
+                badge: "Oliy toifa",
+                initials: "QM",
+                accent: "from-emerald-500 to-teal-600",
+                bio: "Algebra va mantiqiy tahlil bo'yicha mualliflik darsliklari muallifi, 'Xalq ta'limi a'lochisi'."
+            },
+            {
+                name: "Yusupova Dilnoza",
+                role: "Xorijiy tillar koordinatori",
+                subject: "Ingliz tili (IELTS 8.5, CELTA)",
+                badge: "IELTS 8.5",
+                initials: "YD",
+                accent: "from-purple-600 to-pink-600",
+                bio: "Kembrij CELTA sertifikati sohibasi. O'quvchilarni xalqaro universitetlar va IELTS imtihonlariga tayyorlaydi."
+            }
+        ];
+
+        // --------------------------------------------------------------
+        // 2. LOCALSTORAGE BILAN ISHLASH (STATISTIKA VA YANGILIKLAR)
+        // --------------------------------------------------------------
+        let schoolStats = JSON.parse(localStorage.getItem('aqlli_maktab_stats')) || { ...defaultStats };
+        let newsList = JSON.parse(localStorage.getItem('aqlli_maktab_news')) || [...defaultNewsData];
+
+        function renderStats() {
+            document.getElementById('statStudents').textContent = schoolStats.students;
+            document.getElementById('statTeachers').textContent = schoolStats.teachers;
+            document.getElementById('statWinners').textContent = schoolStats.winners;
+            document.getElementById('statRooms').textContent = schoolStats.rooms;
+        }
+
+        // --------------------------------------------------------------
+        // 3. JONLI RAQAMLI SOAT VA SANA (HERO DASHBOARD)
+        // --------------------------------------------------------------
+        const uzMonths = ["Yanvar", "Fevral", "Mart", "Aprel", "May", "Iyun", "Iyul", "Avgust", "Sentabr", "Oktabr", "Noyabr", "Dekabr"];
+        const uzDays = ["Yakshanba", "Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba"];
+
+        function updateLiveClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            document.getElementById('liveClock').textContent = `${hours}:${minutes}:${seconds}`;
+            
+            const dayName = uzDays[now.getDay()];
+            const dayNum = now.getDate();
+            const monthName = uzMonths[now.getMonth()];
+            const year = now.getFullYear();
+            document.getElementById('liveDate').textContent = `${dayNum}-${monthName}, ${year}-yil • ${dayName}`;
+
+            // Smena holati
+            const h = now.getHours();
+            const shiftBadge = document.getElementById('shiftBadge');
+            if (h >= 8 && h < 13) {
+                shiftBadge.textContent = "1-smena darslari";
+            } else if (h >= 13 && h < 18) {
+                shiftBadge.textContent = "STEAM to'garaklar vaqti";
+            } else {
+                shiftBadge.textContent = "Tungi monitoring";
+            }
+        }
+
+        // --------------------------------------------------------------
+        // 4. ELEKTRON KUNDALIK (E-JURNAL) LOGIKASI
+        // --------------------------------------------------------------
+        const studentSelector = document.getElementById('studentSelector');
+        const studentProfileCard = document.getElementById('studentProfileCard');
+        const studentGradesList = document.getElementById('studentGradesList');
+
+        function initEJurnal() {
+            studentSelector.innerHTML = studentsData.map(st => 
+                `<option value="${st.id}">${st.name} (${st.gradeClass.split(' ')[0]})</option>`
+            ).join('');
+
+            renderStudentJournal(studentsData[0].id);
+
+            studentSelector.addEventListener('change', (e) => {
+                renderStudentJournal(e.target.value);
+            });
+        }
+
+        function renderStudentJournal(studentId) {
+            const st = studentsData.find(s => s.id === studentId) || studentsData[0];
+
+            studentProfileCard.innerHTML = `
+                <div class="space-y-5">
+                    <div class="flex items-center gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-gradient-to-br ${st.accent} text-white flex items-center justify-center text-xl font-extrabold shadow-md shrink-0">
+                            ${st.avatarInitials}
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-mono text-slate-400">ID: ${st.id}</span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${st.name}</h3>
+                            <p class="text-xs font-medium text-smart-600 dark:text-smart-400">${st.gradeClass}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-3 pt-2">
+                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-800">
+                            <div class="text-[11px] text-slate-400 uppercase font-semibold">O'rtacha Ball</div>
+                            <div class="text-2xl font-extrabold text-slate-900 dark:text-white mt-0.5">${st.gpa} <span class="text-xs font-normal text-slate-400">/ 5.0</span></div>
+                        </div>
+                        <div class="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-800">
+                            <div class="text-[11px] text-slate-400 uppercase font-semibold">Davomat</div>
+                            <div class="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-0.5">${st.attendance}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs">
+                    <span class="text-slate-500">FaceID Kirish:</span>
+                    <span class="font-mono font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-lg">✓ ${st.faceIdEntry}</span>
+                </div>
+            `;
+
+            studentGradesList.innerHTML = st.subjects.map(sub => {
+                const badgeColor = sub.grade === 5 
+                    ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/70 dark:text-emerald-300 border-emerald-200/60 dark:border-emerald-800/50" 
+                    : "bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300 border-amber-200/60 dark:border-amber-800/50";
+                const barColor = sub.score >= 90 ? "bg-emerald-500" : "bg-amber-500";
+
+                return `
+                    <div class="p-4 rounded-2xl bg-slate-50/80 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800/80 space-y-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <div>
+                                <div class="font-bold text-sm sm:text-base text-slate-900 dark:text-white">${sub.name}</div>
+                                <div class="text-xs text-slate-500 dark:text-slate-400">O'qituvchi: ${sub.teacher}</div>
+                            </div>
+                            <div class="flex items-center gap-2.5">
+                                <span class="font-mono text-xs font-bold text-slate-600 dark:text-slate-300">${sub.score} / 100 ball</span>
+                                <span class="px-3 py-1 rounded-xl border text-xs font-extrabold ${badgeColor}">Baho: ${sub.grade}</span>
+                            </div>
+                        </div>
+                        <div class="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                            <div class="${barColor} h-full rounded-full transition-all duration-500" style="width: ${sub.score}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --------------------------------------------------------------
+        // 5. AQLLI DARS JADVALI LOGIKASI
+        // --------------------------------------------------------------
+        let selectedClass = "5-sinf";
+        let selectedDay = "Dushanba";
+
+        const classTabs = document.getElementById('classTabs');
+        const dayTabs = document.getElementById('dayTabs');
+        const scheduleLessonsContainer = document.getElementById('scheduleLessonsContainer');
+
+        function renderScheduleControls() {
+            const classes = Object.keys(scheduleData);
+            classTabs.innerHTML = classes.map(cls => {
+                const active = cls === selectedClass;
+                return `
+                    <button onclick="selectScheduleClass('${cls}')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${active ? 'bg-smart-600 text-white shadow-md shadow-smart-600/20' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'}">
+                        ${cls}
+                    </button>
+                `;
+            }).join('');
+
+            const days = Object.keys(scheduleData[selectedClass]);
+            dayTabs.innerHTML = days.map(day => {
+                const active = day === selectedDay;
+                return `
+                    <button onclick="selectScheduleDay('${day}')" class="px-4 py-3 rounded-2xl text-left text-xs sm:text-sm font-semibold transition-all shrink-0 flex items-center justify-between ${active ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-sm' : 'bg-slate-50 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'}">
+                        <span>${day}</span>
+                        <span class="hidden lg:inline text-xs opacity-60">&rarr;</span>
+                    </button>
+                `;
+            }).join('');
+
+            const lessons = scheduleData[selectedClass][selectedDay] || [];
+            scheduleLessonsContainer.innerHTML = lessons.map((lesson, index) => `
+                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 flex items-start justify-between gap-4 hover:border-smart-500/40 transition-colors">
+                    <div class="flex items-start gap-3.5">
+                        <div class="w-9 h-9 rounded-xl bg-smart-100 dark:bg-smart-900/50 text-smart-700 dark:text-smart-300 font-mono font-bold text-sm flex items-center justify-center shrink-0">
+                            ${index + 1}
+                        </div>
+                        <div>
+                            <div class="text-xs font-mono text-slate-400">${lesson.time}</div>
+                            <h4 class="font-bold text-base text-slate-900 dark:text-white mt-0.5">${lesson.subject}</h4>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">O'qituvchi: <strong class="text-slate-700 dark:text-slate-300">${lesson.teacher}</strong></p>
+                        </div>
+                    </div>
+                    <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-[11px] font-mono font-semibold text-cyan-600 dark:text-cyan-400 shrink-0">
+                        ${lesson.room}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        window.selectScheduleClass = function(cls) {
+            selectedClass = cls;
+            renderScheduleControls();
+        };
+
+        window.selectScheduleDay = function(day) {
+            selectedDay = day;
+            renderScheduleControls();
+        };
+
+        // --------------------------------------------------------------
+        // 6. STEAM LABORATORIYA KARTALARI VA MODAL
+        // --------------------------------------------------------------
+        function renderSteamLabs() {
+            const steamGrid = document.getElementById('steamGrid');
+            steamGrid.innerHTML = steamLabsData.map(lab => `
+                <div onclick="openSteamModal('${lab.id}')" class="group cursor-pointer rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                    <div>
+                        <div class="flex items-center justify-between mb-5">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-br ${lab.accent} text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                                ${lab.icon}
+                            </div>
+                            <span class="font-mono text-[11px] font-bold px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">${lab.badge}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-smart-600 dark:group-hover:text-smart-400 transition-colors">${lab.title}</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">${lab.shortDesc}</p>
+                    </div>
+                    <div class="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-smart-600 dark:text-smart-400 flex items-center justify-between">
+                        <span>Jihozlar va loyihalar</span>
+                        <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        window.openSteamModal = function(id) {
+            const lab = steamLabsData.find(l => l.id === id);
+            if (!lab) return;
+
+            openUniversalModal(
+                lab.badge,
+                `
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">${lab.title}</h2>
+                    <p class="text-slate-600 dark:text-slate-300">${lab.details}</p>
+                    <div class="space-y-2.5 pt-2">
+                        <h4 class="text-sm font-bold uppercase tracking-wider text-slate-500">Laboratoriya texnik jihozlari:</h4>
+                        <ul class="space-y-2">
+                            ${lab.equipment.map(eq => `
+                                <li class="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 text-sm font-medium">
+                                    <span class="w-2 h-2 rounded-full bg-smart-500"></span>
+                                    <span>${eq}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `
+            );
+        };
+
+        // --------------------------------------------------------------
+        // 7. ELEKTRON KUTUBXONA LOGIKASI
+        // --------------------------------------------------------------
+        const librarySearch = document.getElementById('librarySearch');
+        const libraryCategoryFilter = document.getElementById('libraryCategoryFilter');
+        const libraryGrid = document.getElementById('libraryGrid');
+
+        function renderLibrary() {
+            const query = librarySearch.value.toLowerCase().trim();
+            const cat = libraryCategoryFilter.value;
+
+            const filtered = libraryBooksData.filter(book => {
+                const matchesCat = cat === 'all' || book.category === cat;
+                const matchesQuery = book.title.toLowerCase().includes(query) || book.author.toLowerCase().includes(query);
+                return matchesCat && matchesQuery;
+            });
+
+            if (filtered.length === 0) {
+                libraryGrid.innerHTML = `<div class="col-span-full text-center py-8 text-sm text-slate-500">So'rovingiz bo'yicha kitob topilmadi.</div>`;
+                return;
+            }
+
+            libraryGrid.innerHTML = filtered.map(book => `
+                <div class="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200/70 dark:border-slate-800 flex flex-col justify-between gap-4">
+                    <div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-lg bg-smart-100 dark:bg-smart-900/50 text-smart-700 dark:text-smart-300">${book.category}</span>
+                            <span class="text-[11px] font-mono text-slate-400">${book.pages} bet</span>
+                        </div>
+                        <h4 class="font-bold text-base text-slate-900 dark:text-white leading-snug">${book.title}</h4>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Muallif: ${book.author} • ${book.grade}</p>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-2.5 line-clamp-2 leading-relaxed">${book.summary}</p>
+                    </div>
+                    <button onclick="openBookModal(${book.id})" class="w-full py-2.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-smart-600 hover:text-white dark:hover:bg-smart-600 border border-slate-200 dark:border-slate-700 text-xs font-semibold transition-colors">
+                        Mundarija va Ko'rish
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        window.openBookModal = function(bookId) {
+            const book = libraryBooksData.find(b => b.id === bookId);
+            if (!book) return;
+
+            openUniversalModal(
+                `E-Kutubxona • ${book.category}`,
+                `
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white">${book.title}</h2>
+                        <p class="text-sm text-slate-500 mt-1">Muallif: <strong>${book.author}</strong> • Tavsiya etiladi: ${book.grade} (${book.pages} sahifa)</p>
+                    </div>
+                    <p class="text-sm bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800">${book.summary}</p>
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Kitob mundarijasi:</h4>
+                        <ul class="space-y-2">
+                            ${book.chapters.map(ch => `
+                                <li class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/40 text-sm font-medium flex items-center gap-2">
+                                    <span class="text-smart-600 dark:text-smart-400 font-bold">#</span>
+                                    <span>${ch}</span>
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                    <div class="pt-2">
+                        <span class="inline-block w-full text-center py-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 text-xs font-semibold border border-emerald-200/60 dark:border-emerald-800/50">
+                            ✓ Ushbu raqamli darslik maktab ichki tarmog'ida barcha o'quvchilar uchun bepul ochiq
+                        </span>
+                    </div>
+                `
+            );
+        };
+
+        librarySearch.addEventListener('input', renderLibrary);
+        libraryCategoryFilter.addEventListener('change', renderLibrary);
+
+        // --------------------------------------------------------------
+        // 8. MAKTAB YANGILIKLARI VA E'LONLAR
+        // --------------------------------------------------------------
+        function renderNews() {
+            const newsGrid = document.getElementById('newsGrid');
+            newsGrid.innerHTML = newsList.map(item => {
+                const badgeStyle = item.category === 'Olimpiada' 
+                    ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300' 
+                    : item.category === "E'lon" 
+                    ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300'
+                    : 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300';
+
+                return `
+                    <article onclick="openNewsModal(${item.id})" class="group cursor-pointer rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between gap-2 mb-4">
+                                <span class="px-3 py-1 rounded-xl text-xs font-bold ${badgeStyle}">${item.category}</span>
+                                <span class="text-xs font-mono text-slate-400">${item.date}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-smart-600 dark:group-hover:text-smart-400 transition-colors leading-snug">
+                                ${item.title}
+                            </h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2.5 line-clamp-3 leading-relaxed">
+                                ${item.excerpt}
+                            </p>
+                        </div>
+                        <div class="pt-5 mt-5 border-t border-slate-100 dark:border-slate-800 text-xs font-semibold text-smart-600 dark:text-smart-400 flex items-center justify-between">
+                            <span>To'liq o'qish</span>
+                            <span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        window.openNewsModal = function(newsId) {
+            const item = newsList.find(n => n.id === newsId);
+            if (!item) return;
+
+            openUniversalModal(
+                `${item.category} • ${item.date}`,
+                `
+                    <h2 class="text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">${item.title}</h2>
+                    <p class="text-base text-slate-700 dark:text-slate-200 leading-relaxed">${item.fullText}</p>
+                `
+            );
+        };
+
+        // --------------------------------------------------------------
+        // 9. O'QITUVCHILAR VA RAHBARIYAT (JAMOA)
+        // --------------------------------------------------------------
+        function renderTeam() {
+            const teamGrid = document.getElementById('teamGrid');
+            teamGrid.innerHTML = teamData.map(member => `
+                <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-6 flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br ${member.accent} text-white flex items-center justify-center font-extrabold text-lg shadow-md">
+                                ${member.initials}
+                            </div>
+                            <span class="px-2.5 py-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 text-[11px] font-bold">
+                                ${member.badge}
+                            </span>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white">${member.name}</h3>
+                        <div class="text-xs font-semibold text-smart-600 dark:text-smart-400 mt-0.5">${member.role}</div>
+                        <div class="text-xs text-slate-400 mt-0.5">${member.subject}</div>
+                        <p class="text-xs text-slate-600 dark:text-slate-300 mt-3 leading-relaxed">${member.bio}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --------------------------------------------------------------
+        // 10. UMUMIY MODAL VA ADMIN PANEL BOSHQARUVI
+        // --------------------------------------------------------------
+        const universalModal = document.getElementById('universalModal');
+        const uModalBadge = document.getElementById('uModalBadge');
+        const uModalBody = document.getElementById('uModalBody');
+        const closeUniversalModal = document.getElementById('closeUniversalModal');
+
+        function openUniversalModal(badgeText, bodyHTML) {
+            uModalBadge.textContent = badgeText;
+            uModalBody.innerHTML = bodyHTML;
+            universalModal.classList.remove('hidden');
+            universalModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeUModal() {
+            universalModal.classList.add('hidden');
+            universalModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        closeUniversalModal.addEventListener('click', closeUModal);
+        universalModal.addEventListener('click', (e) => { if (e.target === universalModal) closeUModal(); });
+
+        // Admin Modal elementlari
+        const adminModal = document.getElementById('adminModal');
+        const openAdminBtn = document.getElementById('openAdminBtn');
+        const closeAdminModal = document.getElementById('closeAdminModal');
+        const adminAuthScreen = document.getElementById('adminAuthScreen');
+        const adminDashboardScreen = document.getElementById('adminDashboardScreen');
+        const adminPinInput = document.getElementById('adminPinInput');
+        const verifyPinBtn = document.getElementById('verifyPinBtn');
+        const adminPinError = document.getElementById('adminPinError');
+        const adminToast = document.getElementById('adminToast');
+
+        openAdminBtn.addEventListener('click', () => {
+            adminPinInput.value = '';
+            adminPinError.classList.add('hidden');
+            adminAuthScreen.classList.remove('hidden');
+            adminDashboardScreen.classList.add('hidden');
+            adminModal.classList.remove('hidden');
+            adminModal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+            setTimeout(() => adminPinInput.focus(), 100);
+        });
+
+        function closeAModal() {
+            adminModal.classList.add('hidden');
+            adminModal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        closeAdminModal.addEventListener('click', closeAModal);
+        adminModal.addEventListener('click', (e) => { if (e.target === adminModal) closeAModal(); });
+
+        function checkAdminPin() {
+            if (adminPinInput.value === '1234') {
+                adminPinError.classList.add('hidden');
+                adminAuthScreen.classList.add('hidden');
+                adminDashboardScreen.classList.remove('hidden');
+                
+                // Hozirgi statistika qiymatlarini formaga yuklash
+                document.getElementById('inputStatStudents').value = schoolStats.students;
+                document.getElementById('inputStatTeachers').value = schoolStats.teachers;
+                document.getElementById('inputStatWinners').value = schoolStats.winners;
+                document.getElementById('inputStatRooms').value = schoolStats.rooms;
+            } else {
+                adminPinError.classList.remove('hidden');
+            }
+        }
+
+        verifyPinBtn.addEventListener('click', checkAdminPin);
+        adminPinInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') checkAdminPin(); });
+
+        function showAdminToast(msg) {
+            adminToast.textContent = msg;
+            adminToast.classList.remove('hidden');
+            setTimeout(() => adminToast.classList.add('hidden'), 3000);
+        }
+
+        // Statistikani saqlash
+        document.getElementById('saveStatsBtn').addEventListener('click', () => {
+            schoolStats = {
+                students: parseInt(document.getElementById('inputStatStudents').value) || defaultStats.students,
+                teachers: parseInt(document.getElementById('inputStatTeachers').value) || defaultStats.teachers,
+                winners: parseInt(document.getElementById('inputStatWinners').value) || defaultStats.winners,
+                rooms: parseInt(document.getElementById('inputStatRooms').value) || defaultStats.rooms
+            };
+            localStorage.setItem('aqlli_maktab_stats', JSON.stringify(schoolStats));
+            renderStats();
+            showAdminToast("✓ Maktab statistikasi muvaffaqiyatli yangilandi!");
+        });
+
+        // Yangi e'lon qo'shish
+        document.getElementById('addNewsBtn').addEventListener('click', () => {
+            const title = document.getElementById('newNewsTitle').value.trim();
+            const category = document.getElementById('newNewsCategory').value;
+            const content = document.getElementById('newNewsContent').value.trim();
+
+            if (!title || !content) {
+                showAdminToast("⚠ Iltimos, sarlavha va matnni to'ldiring!");
+                return;
+            }
+
+            const now = new Date();
+            const dateStr = `${now.getDate()} ${uzMonths[now.getMonth()]}, ${now.getFullYear()}`;
+
+            const newEntry = {
+                id: Date.now(),
+                category: category,
+                date: dateStr,
+                title: title,
+                excerpt: content.length > 120 ? content.substring(0, 120) + "..." : content,
+                fullText: content
+            };
+
+            newsList.unshift(newEntry);
+            localStorage.setItem('aqlli_maktab_news', JSON.stringify(newsList));
+            renderNews();
+
+            document.getElementById('newNewsTitle').value = '';
+            document.getElementById('newNewsContent').value = '';
+            showAdminToast("✓ Yangi e'lon bosh sahifaga joylashtirildi!");
+        });
+
+        // Boshlang'ich holatga qaytarish
+        document.getElementById('resetDemoDataBtn').addEventListener('click', () => {
+            localStorage.removeItem('aqlli_maktab_stats');
+            localStorage.removeItem('aqlli_maktab_news');
+            schoolStats = { ...defaultStats };
+            newsList = [...defaultNewsData];
+            renderStats();
+            renderNews();
+            document.getElementById('inputStatStudents').value = schoolStats.students;
+            document.getElementById('inputStatTeachers').value = schoolStats.teachers;
+            document.getElementById('inputStatWinners').value = schoolStats.winners;
+            document.getElementById('inputStatRooms').value = schoolStats.rooms;
+            showAdminToast("✓ Barcha ma'lumotlar boshlang'ich holatga qaytarildi.");
+        });
+
+        // --------------------------------------------------------------
+        // 11. TUNGI / KUNDUZGI REJIM VA SAHIFANI ISHGA TUSHIRISH
+        // --------------------------------------------------------------
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+
+        function initTheme() {
+            const saved = localStorage.getItem('aqlli_maktab_theme');
+            if (saved === 'dark' || (!saved && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+        }
+
+        themeToggle.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.setItem('aqlli_maktab_theme', isDark ? 'dark' : 'light');
+            sunIcon.classList.toggle('hidden', !isDark);
+            moonIcon.classList.toggle('hidden', isDark);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeUModal();
+                closeAModal();
+            }
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            renderStats();
+            updateLiveClock();
+            setInterval(updateLiveClock, 1000);
+            initEJurnal();
+            renderScheduleControls();
+            renderSteamLabs();
+            renderLibrary();
+            renderNews();
+            renderTeam();
+        });
+    </script>
+</body>
+</html>
